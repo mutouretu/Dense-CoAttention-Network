@@ -5,15 +5,17 @@ from torch.autograd import Variable
 
 from .modules import *
 from .utils import Initializer
+from constants import RNN_DIM
+
 
 
 class DCN(nn.Module):
 
 	def __init__(self, opt, num_ans):
 		super(DCN, self).__init__()
-		self.lang_extract = LSTM(300, opt.ques_size, opt.num_layers, opt.droprnn, residual_embeddings=True)
+		self.lang_extract = LSTM(RNN_DIM, opt.ques_size, opt.num_layers, opt.droprnn, residual_embeddings=True)
 		
-		rnn_dim = (opt.ques_size - 300)
+		rnn_dim = (opt.ques_size - RNN_DIM)
 		self.img_extract = ImageExtractionLayer(opt.num_layers*rnn_dim, opt.img_size, 
 			opt.num_img_attn, cnn_name=opt.cnn_name)
 		self.dense_coattn = DCNLayer(opt.img_size, opt.ques_size, opt.num_dense_attn, opt.num_none, 
